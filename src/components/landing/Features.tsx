@@ -3,48 +3,47 @@ import {
   Smartphone, Wifi, WifiOff, Globe, 
   MessageCircle, Bell, BarChart3, Wallet
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Features = () => {
+  const { t } = useLanguage();
+  
   const mainFeatures = [
     {
       icon: Users,
-      title: "Customer Management",
-      titleGu: "ગ્રાહક વ્યવસ્થાપન",
-      description: "Search customers instantly by mobile number. Complete history at your fingertips.",
+      titleKey: "features.customer",
+      descKey: "features.customerDesc",
       color: "bg-blue-500/10 text-blue-600",
     },
     {
       icon: Ruler,
-      title: "Smart Measurements",
-      titleGu: "સ્માર્ટ માપ",
-      description: "Pre-built templates for Shirt, Pant, Kurta, Koti & more. Never lose measurements again.",
+      titleKey: "features.measurements",
+      descKey: "features.measurementsDesc",
       color: "bg-amber-500/10 text-amber-600",
     },
     {
       icon: ClipboardList,
-      title: "Order Tracking",
-      titleGu: "ઓર્ડર ટ્રેકિંગ",
-      description: "Track every order from cutting to delivery. Know what's pending at a glance.",
+      titleKey: "features.orders",
+      descKey: "features.ordersDesc",
       color: "bg-emerald-500/10 text-emerald-600",
     },
     {
       icon: Receipt,
-      title: "Instant Billing",
-      titleGu: "તાત્કાલિક બિલિંગ",
-      description: "Generate professional bills in seconds. Print or share via WhatsApp.",
+      titleKey: "features.billing",
+      descKey: "features.billingDesc",
       color: "bg-rose-500/10 text-rose-600",
     },
   ];
 
   const additionalFeatures = [
-    { icon: WifiOff, label: "Works Offline", labelGu: "ઑફલાઇન કામ" },
-    { icon: Globe, label: "3 Languages", labelGu: "3 ભાષાઓ" },
-    { icon: MessageCircle, label: "WhatsApp Bills", labelGu: "વૉટ્સએપ બિલ" },
-    { icon: Bell, label: "Delivery Alerts", labelGu: "ડિલિવરી એલર્ટ" },
-    { icon: BarChart3, label: "Daily Reports", labelGu: "દૈનિક રિપોર્ટ" },
-    { icon: Wallet, label: "Payment Tracking", labelGu: "ચુકવણી ટ્રેકિંગ" },
-    { icon: Smartphone, label: "Mobile Friendly", labelGu: "મોબાઇલ ફ્રેંડલી" },
-    { icon: Wifi, label: "Auto Sync", labelGu: "ઑટો સિંક" },
+    { icon: WifiOff, labelKey: "features.offline" },
+    { icon: Globe, labelKey: "features.languages" },
+    { icon: MessageCircle, labelKey: "features.whatsapp" },
+    { icon: Bell, labelKey: "features.alerts" },
+    { icon: BarChart3, labelKey: "features.reports" },
+    { icon: Wallet, labelKey: "features.payments" },
+    { icon: Smartphone, labelKey: "features.mobile" },
+    { icon: Wifi, labelKey: "features.sync" },
   ];
 
   return (
@@ -53,15 +52,14 @@ const Features = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="inline-block px-4 py-2 rounded-full bg-accent/10 text-accent font-semibold text-sm mb-4">
-            Features
+            {t("features.badge")}
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Everything You Need to
-            <span className="text-gradient"> Grow Your Business</span>
+            {t("features.title")}
+            <span className="text-gradient">{t("features.titleHighlight")}</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Replace notebooks and registers with powerful digital tools designed 
-            specifically for tailors in Gujarat.
+            {t("features.subtitle")}
           </p>
         </div>
 
@@ -75,14 +73,11 @@ const Features = () => {
               <div className={`w-14 h-14 rounded-xl ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                 <feature.icon className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-1">
-                {feature.title}
+              <h3 className="text-xl font-bold text-foreground mb-3">
+                {t(feature.titleKey)}
               </h3>
-              <p className="text-sm text-accent font-gujarati mb-3">
-                {feature.titleGu}
-              </p>
               <p className="text-muted-foreground">
-                {feature.description}
+                {t(feature.descKey)}
               </p>
             </div>
           ))}
@@ -91,7 +86,7 @@ const Features = () => {
         {/* Additional Features */}
         <div className="bg-secondary/50 rounded-3xl p-8 lg:p-12">
           <h3 className="text-xl font-bold text-center text-foreground mb-8">
-            And Much More...
+            {t("features.more")}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
             {additionalFeatures.map((feature, index) => (
@@ -103,10 +98,7 @@ const Features = () => {
                   <feature.icon className="w-5 h-5 text-primary group-hover:text-accent transition-colors" />
                 </div>
                 <span className="text-sm font-medium text-foreground text-center">
-                  {feature.label}
-                </span>
-                <span className="text-xs text-muted-foreground font-gujarati text-center">
-                  {feature.labelGu}
+                  {t(feature.labelKey)}
                 </span>
               </div>
             ))}

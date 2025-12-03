@@ -1,32 +1,35 @@
 import { Scissors } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
+  const { t } = useLanguage();
+
   const footerLinks = {
     product: {
-      title: "Product",
+      titleKey: "footer.product",
       links: [
-        { name: "Features", href: "#features" },
-        { name: "Pricing", href: "#pricing" },
-        { name: "How It Works", href: "#workflow" },
-        { name: "Download App", href: "#" },
+        { nameKey: "footer.features", href: "#features" },
+        { nameKey: "footer.pricing", href: "#pricing" },
+        { nameKey: "footer.howItWorks", href: "#workflow" },
+        { nameKey: "footer.downloadApp", href: "#" },
       ],
     },
     support: {
-      title: "Support",
+      titleKey: "footer.support",
       links: [
-        { name: "Help Center", href: "#" },
-        { name: "Video Tutorials", href: "#" },
-        { name: "Contact Us", href: "#" },
-        { name: "WhatsApp Support", href: "#" },
+        { nameKey: "footer.helpCenter", href: "#" },
+        { nameKey: "footer.videoTutorials", href: "#" },
+        { nameKey: "footer.contactUs", href: "#" },
+        { nameKey: "footer.whatsappSupport", href: "#" },
       ],
     },
     company: {
-      title: "Company",
+      titleKey: "footer.company",
       links: [
-        { name: "About Us", href: "#" },
-        { name: "Careers", href: "#" },
-        { name: "Privacy Policy", href: "#" },
-        { name: "Terms of Service", href: "#" },
+        { nameKey: "footer.aboutUs", href: "#" },
+        { nameKey: "footer.careers", href: "#" },
+        { nameKey: "footer.privacy", href: "#" },
+        { nameKey: "footer.terms", href: "#" },
       ],
     },
   };
@@ -46,11 +49,10 @@ const Footer = () => {
               </span>
             </a>
             <p className="text-white/80 mb-4 max-w-sm">
-              The complete tailor management software built for modern tailoring 
-              businesses in Gujarat and beyond.
+              {t("footer.tagline")}
             </p>
             <p className="text-sm text-white/70 font-gujarati">
-              ગુજરાત ના દરજીઓ માટે સંપૂર્ણ સોફ્ટવેર
+              {t("footer.taglineGu")}
             </p>
           </div>
 
@@ -58,7 +60,7 @@ const Footer = () => {
           {Object.values(footerLinks).map((section, index) => (
             <div key={index}>
               <h4 className="font-bold text-white mb-4">
-                {section.title}
+                {t(section.titleKey)}
               </h4>
               <ul className="space-y-2">
                 {section.links.map((link, linkIndex) => (
@@ -67,7 +69,7 @@ const Footer = () => {
                       href={link.href}
                       className="text-white/80 hover:text-accent transition-colors"
                     >
-                      {link.name}
+                      {t(link.nameKey)}
                     </a>
                   </li>
                 ))}
@@ -79,10 +81,10 @@ const Footer = () => {
         {/* Bottom */}
         <div className="border-t border-white/20 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-white/70">
-            © 2024 StyleSavvy. All rights reserved.
+            {t("footer.rights")}
           </p>
           <p className="text-sm text-white/70">
-            Made with ❤️ for Surat's Tailoring Community
+            {t("footer.madeWith")}
           </p>
         </div>
       </div>

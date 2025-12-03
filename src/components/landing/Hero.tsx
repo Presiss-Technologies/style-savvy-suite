@@ -2,14 +2,16 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Users, Clock, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-tailor.jpg";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   const stats = [
-    { icon: Users, value: "5,000+", label: "Tailors Trust Us" },
-    { icon: Clock, value: "2 Min", label: "Per Order" },
-    { icon: Shield, value: "100%", label: "Offline Ready" },
+    { icon: Users, value: t("hero.stat1Value"), label: t("hero.stat1Label") },
+    { icon: Clock, value: t("hero.stat2Value"), label: t("hero.stat2Label") },
+    { icon: Shield, value: t("hero.stat3Value"), label: t("hero.stat3Label") },
   ];
 
   return (
@@ -30,37 +32,36 @@ const Hero = () => {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-6 animate-fade-in-up">
               <span className="w-2 h-2 rounded-full bg-accent animate-pulse-soft" />
               <span className="text-sm font-semibold text-white">
-                Built for Surat's Tailoring Industry
+                {t("hero.badge")}
               </span>
             </div>
 
             {/* Heading */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-tight mb-6 animate-fade-in-up animation-delay-100 drop-shadow-lg">
-              Manage Your
+              {t("hero.title1")}
               <br />
-              <span className="text-gradient drop-shadow-none">Tailoring Business</span>
+              <span className="text-gradient drop-shadow-none">{t("hero.title2")}</span>
               <br />
-              Like Never Before
+              {t("hero.title3")}
             </h1>
 
             {/* Subtitle */}
             <p className="text-lg sm:text-xl text-white mb-8 max-w-xl mx-auto lg:mx-0 animate-fade-in-up animation-delay-200 drop-shadow-md">
-              The complete software solution for modern tailors. Customer management, 
-              measurements, orders, and billing — all in one place.
+              {t("hero.subtitle")}
               <span className="block mt-2 font-gujarati text-white/90">
-                ગુજરાતી, हिंदी & English में उपलब्ध
+                {t("hero.available")}
               </span>
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up animation-delay-300">
               <Button variant="hero" size="xl" className="group" onClick={() => navigate("/dashboard")}>
-                Start Free Trial
+                {t("hero.startTrial")}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button variant="heroOutline" size="xl" className="group">
                 <Play className="w-5 h-5" />
-                Watch Demo
+                {t("hero.watchDemo")}
               </Button>
             </div>
 
@@ -98,8 +99,8 @@ const Hero = () => {
                   <Shield className="w-6 h-6 text-accent" />
                 </div>
                 <div>
-                  <p className="font-bold text-foreground">Works Offline</p>
-                  <p className="text-sm text-muted-foreground">No internet needed</p>
+                  <p className="font-bold text-foreground">{t("hero.worksOffline")}</p>
+                  <p className="text-sm text-muted-foreground">{t("hero.noInternet")}</p>
                 </div>
               </div>
             </div>
