@@ -47,8 +47,8 @@ const Navbar = () => {
           {/* CTA Buttons & Language */}
           <div className="hidden md:flex items-center gap-4">
             <LanguageSelector />
-            <Button variant="ghost" onClick={() => navigate("/dashboard")}>{t("nav.login")}</Button>
-            <Button variant="gold" onClick={() => navigate("/dashboard")}>{t("nav.startTrial")}</Button>
+            <Button variant="ghost" onClick={() => navigate("/auth")}>{t("nav.login")}</Button>
+            <Button variant="gold" onClick={() => navigate("/auth")}>{t("nav.startTrial")}</Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -83,8 +83,8 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                <Button variant="ghost" className="justify-start" onClick={() => navigate("/dashboard")}>{t("nav.login")}</Button>
-                <Button variant="gold" onClick={() => navigate("/dashboard")}>{t("nav.startTrial")}</Button>
+                <Button variant="ghost" className="justify-start" onClick={() => navigate("/auth")}>{t("nav.login")}</Button>
+                <Button variant="gold" onClick={() => navigate("/auth")}>{t("nav.startTrial")}</Button>
               </div>
             </div>
           </div>
