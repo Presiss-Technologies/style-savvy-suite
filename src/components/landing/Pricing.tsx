@@ -129,7 +129,7 @@ const Pricing = () => {
                 variant={plan.popular ? "hero" : plan.variant}
                 className="w-full"
                 size="lg"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate("/auth")}
               >
                 {t(plan.ctaKey)}
               </Button>
