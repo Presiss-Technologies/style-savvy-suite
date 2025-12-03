@@ -90,7 +90,7 @@ export interface Measurement {
   updatedAt: string;
 }
 
-export type OrderStatus = 'pending' | 'in-progress' | 'ready' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'cutting' | 'stitching' | 'trial' | 'ready' | 'delivered' | 'cancelled';
 export type PaymentStatus = 'unpaid' | 'partial' | 'paid';
 export type UrgencyLevel = 'normal' | 'urgent' | 'express';
 

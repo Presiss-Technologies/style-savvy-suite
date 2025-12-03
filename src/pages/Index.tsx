@@ -18,7 +18,7 @@ const Index = () => {
     totalCustomers: state.customers.length,
     totalMeasurements: state.measurements.length,
     totalOrders: state.orders.length,
-    pendingOrders: state.orders.filter(o => o.status === 'pending' || o.status === 'in-progress').length,
+    pendingOrders: state.orders.filter(o => ['pending', 'cutting', 'stitching', 'trial'].includes(o.status)).length,
     readyOrders: state.orders.filter(o => o.status === 'ready').length,
     revenue: state.orders.reduce((sum, o) => sum + o.paidAmount, 0),
   };
@@ -28,7 +28,7 @@ const Index = () => {
     .slice(0, 5);
 
   const pendingOrders = state.orders
-    .filter(o => o.status === 'pending' || o.status === 'in-progress')
+    .filter(o => ['pending', 'cutting', 'stitching', 'trial'].includes(o.status))
     .sort((a, b) => new Date(a.deliveryDate).getTime() - new Date(b.deliveryDate).getTime())
     .slice(0, 3);
 

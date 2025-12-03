@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, Users, Clock, Shield } from "lucide-react";
+import { ArrowRight, Play, Users, Clock, Shield, Smartphone, WifiOff, Globe } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-tailor.jpg";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -96,11 +96,24 @@ const Hero = () => {
             <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-4 shadow-elevated animate-fade-in-up animation-delay-500">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-accent" />
+                  <WifiOff className="w-6 h-6 text-accent" />
                 </div>
                 <div>
                   <p className="font-bold text-foreground">{t("hero.worksOffline")}</p>
                   <p className="text-sm text-muted-foreground">{t("hero.noInternet")}</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Second Floating Card */}
+            <div className="absolute -top-4 -right-4 bg-white rounded-xl p-3 shadow-elevated animate-fade-in-up animation-delay-600 hidden lg:block">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground text-sm">3 {t("features.languages")}</p>
+                  <p className="text-xs text-muted-foreground">ગુજરાતી, हिंदी, English</p>
                 </div>
               </div>
             </div>
