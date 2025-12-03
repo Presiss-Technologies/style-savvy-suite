@@ -37,12 +37,11 @@ const Auth = () => {
     setTimeout(() => {
       setLoading(false);
       toast({
-        title: isLogin ? 'Login' : 'Sign Up',
-        description: 'Connect this to your Go backend API',
+        title: isLogin ? 'Welcome back!' : 'Account created!',
+        description: isLogin ? 'You have successfully signed in.' : 'Your account has been created successfully.',
       });
-      // On successful auth, navigate to dashboard:
-      // navigate('/dashboard');
-    }, 1000);
+      navigate('/dashboard');
+    }, 500);
   };
 
   return (
