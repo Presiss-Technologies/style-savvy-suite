@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,11 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useApp } from '@/contexts/AppContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Order, OrderItem, UrgencyLevel } from '@/types';
+import { Order, OrderItem, UrgencyLevel, ShirtMeasurement, PantMeasurement, KurtaMeasurement, KotiMeasurement, WaistcoatMeasurement, MeasurementData } from '@/types';
 import { generateOrderNumber } from '@/lib/storage';
 import { toast } from 'sonner';
 import { ShoppingBag, Plus, Trash2, Save, Calendar } from 'lucide-react';
 import { format, addDays } from 'date-fns';
+import { InlineMeasurementFields } from './InlineMeasurementFields';
 
 interface OrderFormProps {
   customerId: string;
@@ -41,10 +42,45 @@ const defaultDeliveryDays = {
   express: 1,
 };
 
+const defaultShirt: ShirtMeasurement = {
+  length: 0, chest: 0, waist: 0, shoulder: 0, sleeveLength: 0,
+  sleeveOpening: 0, collar: 0, armHole: 0
+};
+
+const defaultPant: PantMeasurement = {
+  length: 0, waist: 0, hip: 0, thigh: 0, knee: 0,
+  bottom: 0, crotch: 0
+};
+
+const defaultKurta: KurtaMeasurement = {
+  length: 0, chest: 0, waist: 0, shoulder: 0, sleeveLength: 0,
+  sleeveOpening: 0, collar: 0, armHole: 0
+};
+
+const defaultKoti: KotiMeasurement = {
+  length: 0, chest: 0, waist: 0, shoulder: 0, armHole: 0
+};
+
+const defaultWaistcoat: WaistcoatMeasurement = {
+  length: 0, chest: 0, waist: 0, shoulder: 0, armHole: 0
+};
+
+type GarmentType = 'shirt' | 'pant' | 'kurta' | 'koti' | 'waistcoat';
+
+const getDefaultMeasurement = (type: GarmentType) => {
+  switch (type) {
+    case 'shirt': return { ...defaultShirt };
+    case 'pant': return { ...defaultPant };
+    case 'kurta': return { ...defaultKurta };
+    case 'koti': return { ...defaultKoti };
+    case 'waistcoat': return { ...defaultWaistcoat };
+  }
+};
+
 export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProps) => {
   const { dispatch, getCustomerMeasurements } = useApp();
   const { t } = useLanguage();
-  const measurements = getCustomerMeasurements(customerId);
+  const existingMeasurements = getCustomerMeasurements(customerId);
 
   const [items, setItems] = useState<OrderItem[]>(
     order?.items || [
@@ -58,16 +94,74 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
   const [paidAmount, setPaidAmount] = useState(order?.paidAmount || 0);
   const [notes, setNotes] = useState(order?.notes || '');
 
+  // Track measurements for each garment type in the order
+  const [orderMeasurements, setOrderMeasurements] = useState<MeasurementData>(() => {
+    const initial: MeasurementData = {};
+    const garmentTypes = new Set((order?.items || [{ garmentType: 'shirt' }]).map(i => i.garmentType));
+    
+    garmentTypes.forEach(type => {
+      const existing = existingMeasurements.find(m => m.type === type);
+      if (existing) {
+        initial[type] = existing.data as any;
+      } else {
+        initial[type] = getDefaultMeasurement(type);
+      }
+    });
+    
+    return initial;
+  });
+
+  // Get unique garment types in order
+  const getUniqueGarmentTypes = (): GarmentType[] => {
+    const types = new Set<GarmentType>();
+    items.forEach(item => types.add(item.garmentType));
+    return Array.from(types);
+  };
+
+  // Find last item index for each garment type
+  const getLastItemIndexForType = (type: GarmentType): number => {
+    for (let i = items.length - 1; i >= 0; i--) {
+      if (items[i].garmentType === type) return i;
+    }
+    return -1;
+  };
+
   const addItem = () => {
-    setItems([
-      ...items,
-      { id: uuidv4(), garmentType: 'shirt', quantity: 1, price: garmentPrices.shirt },
-    ]);
+    const newItem: OrderItem = { 
+      id: uuidv4(), 
+      garmentType: 'shirt', 
+      quantity: 1, 
+      price: garmentPrices.shirt 
+    };
+    setItems([...items, newItem]);
+    
+    // Add measurement data if not exists
+    if (!orderMeasurements.shirt) {
+      const existing = existingMeasurements.find(m => m.type === 'shirt');
+      setOrderMeasurements(prev => ({
+        ...prev,
+        shirt: existing ? existing.data as ShirtMeasurement : { ...defaultShirt }
+      }));
+    }
   };
 
   const removeItem = (id: string) => {
     if (items.length > 1) {
-      setItems(items.filter(item => item.id !== id));
+      const itemToRemove = items.find(item => item.id === id);
+      const newItems = items.filter(item => item.id !== id);
+      setItems(newItems);
+      
+      // Clean up measurement if no more items of that type
+      if (itemToRemove) {
+        const stillHasType = newItems.some(item => item.garmentType === itemToRemove.garmentType);
+        if (!stillHasType) {
+          setOrderMeasurements(prev => {
+            const updated = { ...prev };
+            delete updated[itemToRemove.garmentType];
+            return updated;
+          });
+        }
+      }
     }
   };
 
@@ -78,11 +172,39 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
         // Auto-update price when garment type changes
         if (updates.garmentType) {
           updated.price = garmentPrices[updates.garmentType] * urgencyMultiplier[urgency];
+          
+          // Add measurement data for new garment type if not exists
+          if (!orderMeasurements[updates.garmentType]) {
+            const existing = existingMeasurements.find(m => m.type === updates.garmentType);
+            const newMeasurement = existing ? existing.data : getDefaultMeasurement(updates.garmentType!);
+            setOrderMeasurements(prev => ({
+              ...prev,
+              [updates.garmentType!]: newMeasurement
+            } as MeasurementData));
+          }
         }
         return updated;
       }
       return item;
     }));
+  };
+
+  const updateMeasurement = (type: GarmentType, data: any) => {
+    setOrderMeasurements(prev => ({
+      ...prev,
+      [type]: data
+    }));
+  };
+
+  const copyPreviousMeasurement = (type: GarmentType) => {
+    const existing = existingMeasurements.find(m => m.type === type);
+    if (existing) {
+      setOrderMeasurements(prev => ({
+        ...prev,
+        [type]: existing.data
+      }));
+      toast.success(t('measurementForm.copiedSuccess'));
+    }
   };
 
   const handleUrgencyChange = (newUrgency: UrgencyLevel) => {
@@ -106,6 +228,29 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
 
     const now = new Date().toISOString();
     const paymentStatus = paidAmount >= totalAmount ? 'paid' : paidAmount > 0 ? 'partial' : 'unpaid';
+
+    // Save measurements for each garment type
+    const uniqueTypes = getUniqueGarmentTypes();
+    uniqueTypes.forEach(type => {
+      const measurementData = orderMeasurements[type];
+      if (measurementData) {
+        const existingMeasurement = existingMeasurements.find(m => m.type === type);
+        const measurement = {
+          id: existingMeasurement?.id || uuidv4(),
+          customerId,
+          type,
+          data: measurementData,
+          createdAt: existingMeasurement?.createdAt || now,
+          updatedAt: now,
+        };
+        
+        if (existingMeasurement) {
+          dispatch({ type: 'UPDATE_MEASUREMENT', payload: measurement });
+        } else {
+          dispatch({ type: 'ADD_MEASUREMENT', payload: measurement });
+        }
+      }
+    });
 
     const savedOrder: Order = {
       id: order?.id || uuidv4(),
@@ -153,59 +298,77 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
             </Button>
           </div>
 
-          {items.map((item, index) => (
-            <div key={item.id} className="flex gap-3 items-end p-4 bg-secondary/30 rounded-lg">
-              <div className="flex-1 space-y-2">
-                <Label className="text-xs">{t('orderForm.garmentType')}</Label>
-                <Select
-                  value={item.garmentType}
-                  onValueChange={(value) => updateItem(item.id, { garmentType: value as OrderItem['garmentType'] })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="shirt">{t('orderForm.shirt')}</SelectItem>
-                    <SelectItem value="pant">{t('orderForm.pant')}</SelectItem>
-                    <SelectItem value="kurta">{t('orderForm.kurta')}</SelectItem>
-                    <SelectItem value="koti">{t('orderForm.koti')}</SelectItem>
-                    <SelectItem value="waistcoat">{t('orderForm.waistcoat')}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          {items.map((item, index) => {
+            const isLastOfType = getLastItemIndexForType(item.garmentType) === index;
+            const existingMeasurement = existingMeasurements.find(m => m.type === item.garmentType);
+            
+            return (
+              <div key={item.id}>
+                <div className="flex gap-3 items-end p-4 bg-secondary/30 rounded-lg">
+                  <div className="flex-1 space-y-2">
+                    <Label className="text-xs">{t('orderForm.garmentType')}</Label>
+                    <Select
+                      value={item.garmentType}
+                      onValueChange={(value) => updateItem(item.id, { garmentType: value as OrderItem['garmentType'] })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="shirt">{t('orderForm.shirt')}</SelectItem>
+                        <SelectItem value="pant">{t('orderForm.pant')}</SelectItem>
+                        <SelectItem value="kurta">{t('orderForm.kurta')}</SelectItem>
+                        <SelectItem value="koti">{t('orderForm.koti')}</SelectItem>
+                        <SelectItem value="waistcoat">{t('orderForm.waistcoat')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div className="w-20 space-y-2">
-                <Label className="text-xs">{t('orderForm.qty')}</Label>
-                <Input
-                  type="number"
-                  min="1"
-                  value={item.quantity}
-                  onChange={(e) => updateItem(item.id, { quantity: parseInt(e.target.value) || 1 })}
-                />
-              </div>
+                  <div className="w-20 space-y-2">
+                    <Label className="text-xs">{t('orderForm.qty')}</Label>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={item.quantity}
+                      onChange={(e) => updateItem(item.id, { quantity: parseInt(e.target.value) || 1 })}
+                    />
+                  </div>
 
-              <div className="w-28 space-y-2">
-                <Label className="text-xs">{t('orderForm.price')} (₹)</Label>
-                <Input
-                  type="number"
-                  min="0"
-                  value={item.price}
-                  onChange={(e) => updateItem(item.id, { price: parseFloat(e.target.value) || 0 })}
-                />
-              </div>
+                  <div className="w-28 space-y-2">
+                    <Label className="text-xs">{t('orderForm.price')} (₹)</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={item.price}
+                      onChange={(e) => updateItem(item.id, { price: parseFloat(e.target.value) || 0 })}
+                    />
+                  </div>
 
-              {items.length > 1 && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeItem(item.id)}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          ))}
+                  {items.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeItem(item.id)}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+
+                {/* Show measurement fields below the last item of each garment type */}
+                {isLastOfType && orderMeasurements[item.garmentType] && (
+                  <InlineMeasurementFields
+                    garmentType={item.garmentType}
+                    data={orderMeasurements[item.garmentType]!}
+                    onChange={(data) => updateMeasurement(item.garmentType, data)}
+                    existingMeasurement={existingMeasurement}
+                    onCopyPrevious={existingMeasurement ? () => copyPreviousMeasurement(item.garmentType) : undefined}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Urgency & Delivery */}

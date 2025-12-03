@@ -194,6 +194,7 @@ export const translations = {
     "orderForm.itemError": "Please add at least one item",
     "orderForm.createdSuccess": "Order #{number} created",
     "orderForm.updatedSuccess": "Order updated successfully",
+    "orderForm.measurements": "Measurements",
     
     // Order Card
     "orderCard.delivery": "Delivery",
@@ -605,6 +606,7 @@ export const translations = {
     "orderForm.itemError": "કૃપા કરીને ઓછામાં ઓછી એક આઇટમ ઉમેરો",
     "orderForm.createdSuccess": "ઓર્ડર #{number} બનાવ્યો",
     "orderForm.updatedSuccess": "ઓર્ડર સફળતાપૂર્વક અપડેટ થયો",
+    "orderForm.measurements": "માપ",
     
     // Order Card
     "orderCard.delivery": "ડિલિવરી",
@@ -1016,6 +1018,7 @@ export const translations = {
     "orderForm.itemError": "कृपया कम से कम एक आइटम जोड़ें",
     "orderForm.createdSuccess": "ऑर्डर #{number} बनाया गया",
     "orderForm.updatedSuccess": "ऑर्डर सफलतापूर्वक अपडेट किया गया",
+    "orderForm.measurements": "माप",
     
     // Order Card
     "orderCard.delivery": "डिलीवरी",
