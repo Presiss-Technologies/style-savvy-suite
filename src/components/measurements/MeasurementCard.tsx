@@ -2,6 +2,7 @@ import { Measurement } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { format } from 'date-fns';
 import { Ruler, Edit, Trash2 } from 'lucide-react';
 
@@ -10,14 +11,6 @@ interface MeasurementCardProps {
   onEdit?: () => void;
   onDelete?: () => void;
 }
-
-const typeLabels = {
-  shirt: 'Shirt',
-  pant: 'Pant',
-  kurta: 'Kurta',
-  koti: 'Koti',
-  waistcoat: 'Waistcoat',
-};
 
 const typeVariants: Record<string, 'info' | 'success' | 'default' | 'warning' | 'destructive'> = {
   shirt: 'info',
@@ -28,6 +21,16 @@ const typeVariants: Record<string, 'info' | 'success' | 'default' | 'warning' | 
 };
 
 export const MeasurementCard = ({ measurement, onEdit, onDelete }: MeasurementCardProps) => {
+  const { t } = useLanguage();
+  
+  const typeLabels: Record<string, string> = {
+    shirt: t('measurementForm.shirt'),
+    pant: t('measurementForm.pant'),
+    kurta: t('measurementForm.kurta'),
+    koti: t('measurementForm.koti'),
+    waistcoat: t('measurementForm.waistcoat'),
+  };
+
   const data = measurement.data as unknown as Record<string, number>;
   const entries = Object.entries(data).filter(([_, value]) => value > 0);
 
@@ -75,13 +78,13 @@ export const MeasurementCard = ({ measurement, onEdit, onDelete }: MeasurementCa
           {onEdit && (
             <Button variant="outline" size="sm" onClick={onEdit} className="gap-1.5">
               <Edit className="h-3.5 w-3.5" />
-              Edit
+              {t('measurementCard.edit')}
             </Button>
           )}
           {onDelete && (
             <Button variant="ghost" size="sm" onClick={onDelete} className="gap-1.5 text-destructive hover:text-destructive">
               <Trash2 className="h-3.5 w-3.5" />
-              Delete
+              {t('measurementCard.delete')}
             </Button>
           )}
         </div>

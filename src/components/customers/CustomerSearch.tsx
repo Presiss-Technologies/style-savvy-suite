@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useApp } from '@/contexts/AppContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Customer } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -18,14 +19,17 @@ interface CustomerSearchProps {
 export const CustomerSearch = ({ 
   onSelect, 
   showAddButton = true,
-  placeholder = "Search by mobile number or name..."
+  placeholder
 }: CustomerSearchProps) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Customer[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const { searchCustomers } = useApp();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const searchPlaceholder = placeholder || t('customerSearch.placeholder');
 
   useEffect(() => {
     if (query.length >= 2) {
@@ -74,7 +78,7 @@ export const CustomerSearch = ({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={placeholder}
+          placeholder={searchPlaceholder}
           className="pl-10 pr-4 h-12 text-base bg-card border-2 focus:border-primary/50 transition-colors"
         />
       </div>
@@ -109,7 +113,7 @@ export const CustomerSearch = ({
             </div>
           ) : (
             <div className="p-6 text-center">
-              <p className="text-muted-foreground mb-4">No customers found</p>
+              <p className="text-muted-foreground mb-4">{t('customerSearch.noCustomersFound')}</p>
               {showAddButton && (
                 <Button
                   onClick={() => navigate('/customers/new', { state: { mobile: query } })}
@@ -117,7 +121,7 @@ export const CustomerSearch = ({
                   className="gap-2"
                 >
                   <Plus className="h-4 w-4" />
-                  Add New Customer
+                  {t('customerSearch.addNewCustomer')}
                 </Button>
               )}
             </div>

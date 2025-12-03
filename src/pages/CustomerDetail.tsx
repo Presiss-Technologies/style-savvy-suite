@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { useApp } from '@/contexts/AppContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -32,6 +33,7 @@ const CustomerDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { getCustomer, getCustomerMeasurements, getCustomerOrders, dispatch } = useApp();
+  const { t } = useLanguage();
   
   const [showMeasurementForm, setShowMeasurementForm] = useState(false);
   const [showOrderForm, setShowOrderForm] = useState(false);
@@ -45,9 +47,9 @@ const CustomerDetail = () => {
     return (
       <Layout>
         <div className="text-center py-12">
-          <h2 className="text-2xl font-display font-bold mb-2">Customer Not Found</h2>
-          <p className="text-muted-foreground mb-4">The customer you're looking for doesn't exist.</p>
-          <Button onClick={() => navigate('/customers')}>Go to Customers</Button>
+          <h2 className="text-2xl font-display font-bold mb-2">{t('customerDetail.notFound')}</h2>
+          <p className="text-muted-foreground mb-4">{t('customerDetail.notFoundDesc')}</p>
+          <Button onClick={() => navigate('/customers')}>{t('customerDetail.goToCustomers')}</Button>
         </div>
       </Layout>
     );
@@ -55,13 +57,13 @@ const CustomerDetail = () => {
 
   const handleDeleteCustomer = () => {
     dispatch({ type: 'DELETE_CUSTOMER', payload: customer.id });
-    toast.success('Customer deleted');
+    toast.success(t('common.customerDeleted'));
     navigate('/customers');
   };
 
   const handleDeleteMeasurement = (measurementId: string) => {
     dispatch({ type: 'DELETE_MEASUREMENT', payload: measurementId });
-    toast.success('Measurement deleted');
+    toast.success(t('measurementCard.deletedSuccess'));
   };
 
   const getTagVariant = (tag: string) => {
@@ -82,7 +84,7 @@ const CustomerDetail = () => {
           className="gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Customers
+          {t('customerDetail.back')}
         </Button>
 
         {/* Customer Header */}
@@ -117,7 +119,7 @@ const CustomerDetail = () => {
                     )}
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
-                      Customer since {format(new Date(customer.createdAt), 'MMM d, yyyy')}
+                      {t('customerDetail.customerSince')} {format(new Date(customer.createdAt), 'MMM d, yyyy')}
                     </div>
                   </div>
                 </div>
@@ -130,26 +132,26 @@ const CustomerDetail = () => {
                   className="gap-2"
                 >
                   <Edit className="h-4 w-4" />
-                  Edit
+                  {t('customerDetail.edit')}
                 </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="ghost" className="text-destructive hover:text-destructive gap-2">
                       <Trash2 className="h-4 w-4" />
-                      Delete
+                      {t('customerDetail.delete')}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Customer?</AlertDialogTitle>
+                      <AlertDialogTitle>{t('customerDetail.deleteTitle')}</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This will permanently delete {customer.name} and all their measurements and orders. This action cannot be undone.
+                        {t('customerDetail.deleteDesc').replace('{name}', customer.name)}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>{t('customerDetail.cancel')}</AlertDialogCancel>
                       <AlertDialogAction onClick={handleDeleteCustomer} className="bg-destructive text-destructive-foreground">
-                        Delete
+                        {t('customerDetail.delete')}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -169,15 +171,15 @@ const CustomerDetail = () => {
         <div className="grid grid-cols-3 gap-4">
           <Card className="p-4 text-center">
             <p className="text-2xl font-bold">{measurements.length}</p>
-            <p className="text-sm text-muted-foreground">Measurements</p>
+            <p className="text-sm text-muted-foreground">{t('customerDetail.measurements')}</p>
           </Card>
           <Card className="p-4 text-center">
             <p className="text-2xl font-bold">{orders.length}</p>
-            <p className="text-sm text-muted-foreground">Orders</p>
+            <p className="text-sm text-muted-foreground">{t('customerDetail.orders')}</p>
           </Card>
           <Card className="p-4 text-center">
             <p className="text-2xl font-bold">₹{orders.reduce((s, o) => s + o.totalAmount, 0).toLocaleString()}</p>
-            <p className="text-sm text-muted-foreground">Total Value</p>
+            <p className="text-sm text-muted-foreground">{t('customerDetail.totalValue')}</p>
           </Card>
         </div>
 
@@ -186,11 +188,11 @@ const CustomerDetail = () => {
           <TabsList className="w-full grid grid-cols-2">
             <TabsTrigger value="measurements" className="gap-2">
               <Ruler className="h-4 w-4" />
-              Measurements ({measurements.length})
+              {t('customerDetail.measurements')} ({measurements.length})
             </TabsTrigger>
             <TabsTrigger value="orders" className="gap-2">
               <ShoppingBag className="h-4 w-4" />
-              Orders ({orders.length})
+              {t('customerDetail.orders')} ({orders.length})
             </TabsTrigger>
           </TabsList>
 
@@ -202,7 +204,7 @@ const CustomerDetail = () => {
                 className="gap-2"
               >
                 <Plus className="h-4 w-4" />
-                Add Measurement
+                {t('customerDetail.addMeasurement')}
               </Button>
             )}
 
@@ -239,9 +241,9 @@ const CustomerDetail = () => {
             {measurements.length === 0 && !showMeasurementForm && (
               <Card className="p-8 text-center">
                 <Ruler className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="font-semibold mb-2">No Measurements Yet</h3>
+                <h3 className="font-semibold mb-2">{t('customerDetail.noMeasurementsYet')}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Add the first measurement for this customer
+                  {t('customerDetail.addFirstMeasurement')}
                 </p>
               </Card>
             )}
@@ -255,7 +257,7 @@ const CustomerDetail = () => {
                 className="gap-2"
               >
                 <Plus className="h-4 w-4" />
-                Create Order
+                {t('customerDetail.createOrder')}
               </Button>
             )}
 
@@ -278,9 +280,9 @@ const CustomerDetail = () => {
             {orders.length === 0 && !showOrderForm && (
               <Card className="p-8 text-center">
                 <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="font-semibold mb-2">No Orders Yet</h3>
+                <h3 className="font-semibold mb-2">{t('customerDetail.noOrdersYet')}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Create the first order for this customer
+                  {t('customerDetail.createFirstOrder')}
                 </p>
               </Card>
             )}

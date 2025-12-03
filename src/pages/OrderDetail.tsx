@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { useApp } from '@/contexts/AppContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,26 +17,11 @@ import {
 import { format } from 'date-fns';
 import { Order, OrderStatus, PaymentStatus } from '@/types';
 
-const garmentLabels = {
-  shirt: 'Shirt',
-  pant: 'Pant',
-  kurta: 'Kurta',
-  koti: 'Koti',
-  waistcoat: 'Waistcoat',
-};
-
-const statusConfig = {
-  pending: { label: 'Pending', variant: 'warning' as const, icon: Clock },
-  'in-progress': { label: 'In Progress', variant: 'info' as const, icon: Package },
-  ready: { label: 'Ready', variant: 'success' as const, icon: CheckCircle },
-  delivered: { label: 'Delivered', variant: 'secondary' as const, icon: Truck },
-  cancelled: { label: 'Cancelled', variant: 'destructive' as const, icon: Clock },
-};
-
 const OrderDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { state, getCustomer, dispatch } = useApp();
+  const { t } = useLanguage();
   
   const order = state.orders.find(o => o.id === id);
   const customer = order ? getCustomer(order.customerId) : undefined;
@@ -44,13 +30,29 @@ const OrderDetail = () => {
   const [status, setStatus] = useState<OrderStatus>(order?.status || 'pending');
   const [paidAmount, setPaidAmount] = useState(order?.paidAmount || 0);
 
+  const garmentLabels: Record<string, string> = {
+    shirt: t('orderForm.shirt'),
+    pant: t('orderForm.pant'),
+    kurta: t('orderForm.kurta'),
+    koti: t('orderForm.koti'),
+    waistcoat: t('orderForm.waistcoat'),
+  };
+
+  const statusConfig: Record<string, { label: string; variant: 'warning' | 'info' | 'success' | 'secondary' | 'destructive'; icon: typeof Clock }> = {
+    pending: { label: t('orders.pending'), variant: 'warning', icon: Clock },
+    'in-progress': { label: t('orders.inProgress'), variant: 'info', icon: Package },
+    ready: { label: t('orders.ready'), variant: 'success', icon: CheckCircle },
+    delivered: { label: t('orders.delivered'), variant: 'secondary', icon: Truck },
+    cancelled: { label: t('orders.cancelled'), variant: 'destructive', icon: Clock },
+  };
+
   if (!order || !customer) {
     return (
       <Layout>
         <div className="text-center py-12">
-          <h2 className="text-2xl font-display font-bold mb-2">Order Not Found</h2>
-          <p className="text-muted-foreground mb-4">The order you're looking for doesn't exist.</p>
-          <Button onClick={() => navigate('/orders')}>Go to Orders</Button>
+          <h2 className="text-2xl font-display font-bold mb-2">{t('orderDetail.notFound')}</h2>
+          <p className="text-muted-foreground mb-4">{t('orderDetail.notFoundDesc')}</p>
+          <Button onClick={() => navigate('/orders')}>{t('orderDetail.goToOrders')}</Button>
         </div>
       </Layout>
     );
@@ -70,7 +72,7 @@ const OrderDetail = () => {
     };
 
     dispatch({ type: 'UPDATE_ORDER', payload: updatedOrder });
-    toast.success('Order updated');
+    toast.success(t('orderDetail.orderUpdated'));
     setIsEditing(false);
   };
 
@@ -87,7 +89,7 @@ const OrderDetail = () => {
           className="gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Orders
+          {t('orderDetail.back')}
         </Button>
 
         {/* Order Header */}
@@ -96,14 +98,14 @@ const OrderDetail = () => {
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-2xl font-display font-bold">Order #{order.orderNumber}</h1>
+                  <h1 className="text-2xl font-display font-bold">{t('orderDetail.order')} #{order.orderNumber}</h1>
                   <Badge variant={statusConfig[order.status].variant} className="gap-1">
                     <StatusIcon className="h-3 w-3" />
                     {statusConfig[order.status].label}
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Created on {format(new Date(order.createdAt), 'MMMM d, yyyy')}
+                  {t('orderDetail.createdOn')} {format(new Date(order.createdAt), 'MMMM d, yyyy')}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -113,11 +115,11 @@ const OrderDetail = () => {
                   className="gap-2"
                 >
                   <Edit className="h-4 w-4" />
-                  {isEditing ? 'Cancel' : 'Edit'}
+                  {isEditing ? t('orderDetail.cancel') : t('orderDetail.edit')}
                 </Button>
                 <Button variant="outline" className="gap-2">
                   <Printer className="h-4 w-4" />
-                  Print Invoice
+                  {t('orderDetail.printInvoice')}
                 </Button>
               </div>
             </div>
@@ -132,7 +134,7 @@ const OrderDetail = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <User className="h-5 w-5 text-primary" />
-                  Customer Details
+                  {t('orderDetail.customerDetails')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -153,7 +155,7 @@ const OrderDetail = () => {
                     onClick={() => navigate(`/customers/${customer.id}`)}
                     className="ml-auto"
                   >
-                    View Profile
+                    {t('orderDetail.viewProfile')}
                   </Button>
                 </div>
               </CardContent>
@@ -164,7 +166,7 @@ const OrderDetail = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Package className="h-5 w-5 text-primary" />
-                  Order Items
+                  {t('orderDetail.orderItems')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -187,7 +189,7 @@ const OrderDetail = () => {
 
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex justify-between text-lg font-semibold">
-                    <span>Total</span>
+                    <span>{t('orderDetail.total')}</span>
                     <span>₹{order.totalAmount.toLocaleString()}</span>
                   </div>
                 </div>
@@ -206,29 +208,29 @@ const OrderDetail = () => {
             {/* Order Status & Payment */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Order Status</CardTitle>
+                <CardTitle className="text-lg">{t('orderDetail.orderStatus')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {isEditing ? (
                   <>
                     <div className="space-y-2">
-                      <Label>Status</Label>
+                      <Label>{t('orderDetail.status')}</Label>
                       <Select value={status} onValueChange={(v) => setStatus(v as OrderStatus)}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="in-progress">In Progress</SelectItem>
-                          <SelectItem value="ready">Ready</SelectItem>
-                          <SelectItem value="delivered">Delivered</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                          <SelectItem value="pending">{t('orders.pending')}</SelectItem>
+                          <SelectItem value="in-progress">{t('orders.inProgress')}</SelectItem>
+                          <SelectItem value="ready">{t('orders.ready')}</SelectItem>
+                          <SelectItem value="delivered">{t('orders.delivered')}</SelectItem>
+                          <SelectItem value="cancelled">{t('orders.cancelled')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Paid Amount (₹)</Label>
+                      <Label>{t('orderDetail.paidAmount')} (₹)</Label>
                       <Input
                         type="number"
                         min="0"
@@ -239,29 +241,29 @@ const OrderDetail = () => {
                     </div>
 
                     <Button onClick={handleUpdateOrder} variant="gold" className="w-full">
-                      Save Changes
+                      {t('orderDetail.saveChanges')}
                     </Button>
                   </>
                 ) : (
                   <>
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Status</span>
+                      <span className="text-muted-foreground">{t('orderDetail.status')}</span>
                       <Badge variant={statusConfig[order.status].variant}>
                         {statusConfig[order.status].label}
                       </Badge>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Delivery Date</span>
+                      <span className="text-muted-foreground">{t('orderDetail.deliveryDate')}</span>
                       <span className="font-medium">
                         {format(new Date(order.deliveryDate), 'MMM d, yyyy')}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Urgency</span>
+                      <span className="text-muted-foreground">{t('orderDetail.urgency')}</span>
                       <Badge variant={order.urgency === 'express' ? 'destructive' : order.urgency === 'urgent' ? 'warning' : 'secondary'}>
-                        {order.urgency.charAt(0).toUpperCase() + order.urgency.slice(1)}
+                        {order.urgency === 'normal' ? t('orderDetail.normal') : order.urgency === 'urgent' ? t('orderDetail.urgent') : t('orderDetail.express')}
                       </Badge>
                     </div>
                   </>
@@ -274,20 +276,20 @@ const OrderDetail = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <IndianRupee className="h-5 w-5 text-primary" />
-                  Payment
+                  {t('orderDetail.payment')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total</span>
+                  <span className="text-muted-foreground">{t('orderDetail.total')}</span>
                   <span className="font-semibold">₹{order.totalAmount.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Paid</span>
+                  <span className="text-muted-foreground">{t('orders.paid')}</span>
                   <span className="text-success font-semibold">₹{order.paidAmount.toLocaleString()}</span>
                 </div>
                 <div className="border-t pt-3 flex justify-between">
-                  <span className="font-medium">Balance</span>
+                  <span className="font-medium">{t('orderDetail.balance')}</span>
                   <span className={`font-bold ${balance > 0 ? 'text-destructive' : 'text-success'}`}>
                     ₹{balance.toLocaleString()}
                   </span>
@@ -296,7 +298,7 @@ const OrderDetail = () => {
                   variant={order.paymentStatus === 'paid' ? 'success' : order.paymentStatus === 'partial' ? 'warning' : 'destructive'}
                   className="w-full justify-center py-1.5"
                 >
-                  {order.paymentStatus === 'paid' ? 'Fully Paid' : order.paymentStatus === 'partial' ? 'Partially Paid' : 'Unpaid'}
+                  {order.paymentStatus === 'paid' ? t('orderDetail.fullyPaid') : order.paymentStatus === 'partial' ? t('orderDetail.partiallyPaid') : t('orders.unpaid')}
                 </Badge>
               </CardContent>
             </Card>
