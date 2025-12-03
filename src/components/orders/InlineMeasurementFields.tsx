@@ -78,6 +78,9 @@ export const InlineMeasurementFields = ({
       <MeasurementInput label={t('measurementForm.sleeveOpening')} value={d.sleeveOpening} onChange={(v) => updateField('sleeveOpening', v)} />
       <MeasurementInput label={t('measurementForm.collar')} value={d.collar} onChange={(v) => updateField('collar', v)} />
       <MeasurementInput label={t('measurementForm.armHole')} value={d.armHole} onChange={(v) => updateField('armHole', v)} />
+      <MeasurementInput label={t('measurementForm.cuffSize')} value={d.cuffSize || 0} onChange={(v) => updateField('cuffSize', v)} />
+      <MeasurementInput label={t('measurementForm.frontChest')} value={d.frontChest || 0} onChange={(v) => updateField('frontChest', v)} />
+      <MeasurementInput label={t('measurementForm.backWidth')} value={d.backWidth || 0} onChange={(v) => updateField('backWidth', v)} />
     </div>
   );
 
@@ -90,6 +93,8 @@ export const InlineMeasurementFields = ({
       <MeasurementInput label={t('measurementForm.knee')} value={d.knee} onChange={(v) => updateField('knee', v)} />
       <MeasurementInput label={t('measurementForm.bottom')} value={d.bottom} onChange={(v) => updateField('bottom', v)} />
       <MeasurementInput label={t('measurementForm.crotch')} value={d.crotch} onChange={(v) => updateField('crotch', v)} />
+      <MeasurementInput label={t('measurementForm.rise')} value={d.rise || 0} onChange={(v) => updateField('rise', v)} />
+      <MeasurementInput label={t('measurementForm.inseam')} value={d.inseam || 0} onChange={(v) => updateField('inseam', v)} />
     </div>
   );
 
@@ -103,6 +108,8 @@ export const InlineMeasurementFields = ({
       <MeasurementInput label={t('measurementForm.sleeveOpening')} value={d.sleeveOpening} onChange={(v) => updateField('sleeveOpening', v)} />
       <MeasurementInput label={t('measurementForm.collar')} value={d.collar} onChange={(v) => updateField('collar', v)} />
       <MeasurementInput label={t('measurementForm.armHole')} value={d.armHole} onChange={(v) => updateField('armHole', v)} />
+      <MeasurementInput label={t('measurementForm.slit')} value={d.slit || 0} onChange={(v) => updateField('slit', v)} />
+      <MeasurementInput label={t('measurementForm.daaman')} value={d.daaman || 0} onChange={(v) => updateField('daaman', v)} />
     </div>
   );
 
@@ -113,6 +120,8 @@ export const InlineMeasurementFields = ({
       <MeasurementInput label={t('measurementForm.waist')} value={d.waist} onChange={(v) => updateField('waist', v)} />
       <MeasurementInput label={t('measurementForm.shoulder')} value={d.shoulder} onChange={(v) => updateField('shoulder', v)} />
       <MeasurementInput label={t('measurementForm.armHole')} value={d.armHole} onChange={(v) => updateField('armHole', v)} />
+      <MeasurementInput label={t('measurementForm.frontOpening')} value={d.frontOpening || 0} onChange={(v) => updateField('frontOpening', v)} />
+      <MeasurementInput label={t('measurementForm.backWidth')} value={d.backWidth || 0} onChange={(v) => updateField('backWidth', v)} />
     </div>
   );
 
@@ -123,6 +132,8 @@ export const InlineMeasurementFields = ({
       <MeasurementInput label={t('measurementForm.waist')} value={d.waist} onChange={(v) => updateField('waist', v)} />
       <MeasurementInput label={t('measurementForm.shoulder')} value={d.shoulder} onChange={(v) => updateField('shoulder', v)} />
       <MeasurementInput label={t('measurementForm.armHole')} value={d.armHole} onChange={(v) => updateField('armHole', v)} />
+      <MeasurementInput label={t('measurementForm.frontLength')} value={d.frontLength || 0} onChange={(v) => updateField('frontLength', v)} />
+      <MeasurementInput label={t('measurementForm.backLength')} value={d.backLength || 0} onChange={(v) => updateField('backLength', v)} />
     </div>
   );
 
