@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const CTA = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   return (
     <section className="py-20 lg:py-32 bg-background">
@@ -17,23 +19,22 @@ const CTA = () => {
           
           <div className="relative text-center max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 drop-shadow-lg">
-              Ready to Transform Your
-              <span className="text-accent block drop-shadow-none">Tailoring Business?</span>
+              {t("cta.title")}
+              <span className="text-accent block drop-shadow-none">{t("cta.titleHighlight")}</span>
             </h2>
             
             <p className="text-lg text-white mb-8 drop-shadow-md">
-              Join thousands of tailors in Surat who have already made the switch. 
-              Start your free trial today — no credit card required.
+              {t("cta.subtitle")}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Button variant="hero" size="xl" className="group" onClick={() => navigate("/dashboard")}>
-                Start 14-Day Free Trial
+                {t("cta.trial")}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button variant="heroOutline" size="xl">
                 <MessageCircle className="w-5 h-5" />
-                Contact Sales
+                {t("cta.contact")}
               </Button>
             </div>
 
@@ -45,7 +46,7 @@ const CTA = () => {
               <div className="hidden sm:block w-1 h-1 rounded-full bg-white/50" />
               <div className="flex items-center gap-2 font-medium">
                 <MessageCircle className="w-4 h-4" />
-                <span>WhatsApp Support Available</span>
+                <span>{t("cta.whatsapp")}</span>
               </div>
             </div>
           </div>

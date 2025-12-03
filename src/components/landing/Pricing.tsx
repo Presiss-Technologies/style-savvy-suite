@@ -1,61 +1,60 @@
 import { Button } from "@/components/ui/button";
 import { Check, Star, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   const plans = [
     {
-      name: "Free",
-      nameGu: "મફત",
+      nameKey: "pricing.free",
       price: "₹0",
-      period: "forever",
-      description: "Perfect to try before you buy",
+      periodKey: "pricing.forever",
+      descKey: "pricing.freeDesc",
       features: [
-        "Up to 50 customers",
-        "Basic measurements",
-        "Local storage only",
-        "Single device",
+        "pricing.freeF1",
+        "pricing.freeF2",
+        "pricing.freeF3",
+        "pricing.freeF4",
       ],
-      cta: "Get Started",
+      ctaKey: "pricing.getStarted",
       variant: "outline" as const,
       popular: false,
     },
     {
-      name: "Basic",
-      nameGu: "બેસિક",
+      nameKey: "pricing.basic",
       price: "₹299",
-      period: "/month",
-      description: "For growing tailoring shops",
+      periodKey: "pricing.month",
+      descKey: "pricing.basicDesc",
       features: [
-        "Unlimited customers",
-        "All measurement templates",
-        "Cloud backup",
-        "WhatsApp integration",
-        "2 devices",
-        "Email support",
+        "pricing.basicF1",
+        "pricing.basicF2",
+        "pricing.basicF3",
+        "pricing.basicF4",
+        "pricing.basicF5",
+        "pricing.basicF6",
       ],
-      cta: "Start Free Trial",
+      ctaKey: "pricing.startTrial",
       variant: "gold" as const,
       popular: true,
     },
     {
-      name: "Professional",
-      nameGu: "પ્રોફેશનલ",
+      nameKey: "pricing.professional",
       price: "₹499",
-      period: "/month",
-      description: "For established businesses",
+      periodKey: "pricing.month",
+      descKey: "pricing.proDesc",
       features: [
-        "Everything in Basic",
-        "Multiple workers",
-        "SMS notifications",
-        "Advanced reports",
-        "5 devices",
-        "Priority support",
-        "Worker wage tracking",
+        "pricing.proF1",
+        "pricing.proF2",
+        "pricing.proF3",
+        "pricing.proF4",
+        "pricing.proF5",
+        "pricing.proF6",
+        "pricing.proF7",
       ],
-      cta: "Start Free Trial",
+      ctaKey: "pricing.startTrial",
       variant: "default" as const,
       popular: false,
     },
@@ -67,14 +66,14 @@ const Pricing = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="inline-block px-4 py-2 rounded-full bg-accent/10 text-accent font-semibold text-sm mb-4">
-            Pricing
+            {t("pricing.badge")}
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Simple, Transparent
-            <span className="text-gradient"> Pricing</span>
+            {t("pricing.title")}
+            <span className="text-gradient">{t("pricing.titleHighlight")}</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Start free, upgrade when you need more. No hidden charges.
+            {t("pricing.subtitle")}
           </p>
         </div>
 
@@ -92,17 +91,14 @@ const Pricing = () => {
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-accent text-accent-foreground text-sm font-bold flex items-center gap-1">
                   <Star className="w-4 h-4" />
-                  Most Popular
+                  {t("pricing.mostPopular")}
                 </div>
               )}
 
               <div className="text-center mb-6">
                 <h3 className={`text-xl font-bold ${plan.popular ? "text-white" : "text-foreground"}`}>
-                  {plan.name}
+                  {t(plan.nameKey)}
                 </h3>
-                <p className={`text-sm font-gujarati ${plan.popular ? "text-white/80" : "text-muted-foreground"}`}>
-                  {plan.nameGu}
-                </p>
               </div>
 
               <div className="text-center mb-6">
@@ -110,20 +106,20 @@ const Pricing = () => {
                   {plan.price}
                 </span>
                 <span className={`text-sm ${plan.popular ? "text-white/80" : "text-muted-foreground"}`}>
-                  {plan.period}
+                  {t(plan.periodKey)}
                 </span>
               </div>
 
               <p className={`text-center text-sm mb-6 ${plan.popular ? "text-white/90" : "text-muted-foreground"}`}>
-                {plan.description}
+                {t(plan.descKey)}
               </p>
 
               <ul className="space-y-3 mb-8">
-                {plan.features.map((feature, fIndex) => (
+                {plan.features.map((featureKey, fIndex) => (
                   <li key={fIndex} className="flex items-center gap-3">
                     <Check className={`w-5 h-5 flex-shrink-0 ${plan.popular ? "text-accent" : "text-accent"}`} />
                     <span className={`text-sm ${plan.popular ? "text-white" : "text-foreground"}`}>
-                      {feature}
+                      {t(featureKey)}
                     </span>
                   </li>
                 ))}
@@ -135,7 +131,7 @@ const Pricing = () => {
                 size="lg"
                 onClick={() => navigate("/dashboard")}
               >
-                {plan.cta}
+                {t(plan.ctaKey)}
               </Button>
             </div>
           ))}
@@ -146,13 +142,13 @@ const Pricing = () => {
           <div className="bg-secondary rounded-2xl p-6 lg:p-8 text-center border border-border">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Zap className="w-5 h-5 text-accent" />
-              <span className="font-bold text-foreground">Prefer One-Time Payment?</span>
+              <span className="font-bold text-foreground">{t("pricing.oneTime")}</span>
             </div>
             <p className="text-foreground mb-4">
-              Get lifetime access for just <span className="font-bold text-accent">₹9,999</span> (no monthly fees!)
+              {t("pricing.lifetime")} <span className="font-bold text-accent">{t("pricing.lifetimePrice")}</span> {t("pricing.noMonthly")}
             </p>
             <Button variant="outline" size="lg">
-              Learn More About Lifetime Deal
+              {t("pricing.learnMore")}
             </Button>
           </div>
         </div>

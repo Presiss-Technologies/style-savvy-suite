@@ -2,16 +2,19 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Scissors } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageSelector from "./LanguageSelector";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const navLinks = [
-    { name: "Features", href: "#features" },
-    { name: "How It Works", href: "#workflow" },
-    { name: "Pricing", href: "#pricing" },
-    { name: "Languages", href: "#languages" },
+    { name: t("nav.features"), href: "#features" },
+    { name: t("nav.howItWorks"), href: "#workflow" },
+    { name: t("nav.pricing"), href: "#pricing" },
+    { name: t("nav.languages"), href: "#languages" },
   ];
 
   return (
@@ -32,7 +35,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
-                key={link.name}
+                key={link.href}
                 href={link.href}
                 className="text-muted-foreground hover:text-foreground transition-colors font-medium"
               >
@@ -41,24 +44,28 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons & Language */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate("/dashboard")}>Log In</Button>
-            <Button variant="gold" onClick={() => navigate("/dashboard")}>Start Free Trial</Button>
+            <LanguageSelector />
+            <Button variant="ghost" onClick={() => navigate("/dashboard")}>{t("nav.login")}</Button>
+            <Button variant="gold" onClick={() => navigate("/dashboard")}>{t("nav.startTrial")}</Button>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? (
-              <X className="w-6 h-6 text-foreground" />
-            ) : (
-              <Menu className="w-6 h-6 text-foreground" />
-            )}
-          </button>
+          <div className="flex md:hidden items-center gap-2">
+            <LanguageSelector />
+            <button
+              className="p-2"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? (
+                <X className="w-6 h-6 text-foreground" />
+              ) : (
+                <Menu className="w-6 h-6 text-foreground" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -67,7 +74,7 @@ const Navbar = () => {
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <a
-                  key={link.name}
+                  key={link.href}
                   href={link.href}
                   className="text-muted-foreground hover:text-foreground transition-colors font-medium py-2"
                   onClick={() => setIsOpen(false)}
@@ -76,8 +83,8 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                <Button variant="ghost" className="justify-start" onClick={() => navigate("/dashboard")}>Log In</Button>
-                <Button variant="gold" onClick={() => navigate("/dashboard")}>Start Free Trial</Button>
+                <Button variant="ghost" className="justify-start" onClick={() => navigate("/dashboard")}>{t("nav.login")}</Button>
+                <Button variant="gold" onClick={() => navigate("/dashboard")}>{t("nav.startTrial")}</Button>
               </div>
             </div>
           </div>

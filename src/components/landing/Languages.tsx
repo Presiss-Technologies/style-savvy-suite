@@ -1,35 +1,41 @@
 import { Globe, Check } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Languages = () => {
+  const { t } = useLanguage();
+
   const languages = [
     {
-      name: "ગુજરાતી",
+      nameKey: "lang.gujarati",
       englishName: "Gujarati",
       flag: "🇮🇳",
       primary: true,
-      sample: "તમારા ગ્રાહકોની માપ અને ઓર્ડર સરળતાથી મેનેજ કરો",
+      sampleKey: "lang.sampleGu",
+      fontClass: "font-gujarati",
     },
     {
-      name: "हिंदी",
+      nameKey: "lang.hindi",
       englishName: "Hindi",
       flag: "🇮🇳",
       primary: false,
-      sample: "अपने ग्राहकों की नाप और ऑर्डर आसानी से प्रबंधित करें",
+      sampleKey: "lang.sampleHi",
+      fontClass: "font-hindi",
     },
     {
-      name: "English",
+      nameKey: "lang.english",
       englishName: "English",
       flag: "🌐",
       primary: false,
-      sample: "Easily manage your customers' measurements and orders",
+      sampleKey: "lang.sampleEn",
+      fontClass: "",
     },
   ];
 
   const features = [
-    "Complete UI in all 3 languages",
-    "Measurement labels translated",
-    "Help & tutorials available",
-    "Customer support in Gujarati",
+    t("lang.feature1"),
+    t("lang.feature2"),
+    t("lang.feature3"),
+    t("lang.feature4"),
   ];
 
   return (
@@ -44,17 +50,16 @@ const Languages = () => {
           <div>
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-6">
               <Globe className="w-4 h-4 text-accent" />
-              <span className="text-sm font-semibold text-white">Multi-Language Support</span>
+              <span className="text-sm font-semibold text-white">{t("lang.badge")}</span>
             </span>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 drop-shadow-lg">
-              Use in Your Own
-              <span className="text-gradient block">Language</span>
+              {t("lang.title")}
+              <span className="text-gradient block">{t("lang.titleHighlight")}</span>
             </h2>
 
             <p className="text-lg text-white mb-8 drop-shadow-md">
-              We understand that comfort comes from using software in your mother tongue. 
-              That's why StyleSavvy is fully available in Gujarati, Hindi, and English.
+              {t("lang.subtitle")}
             </p>
 
             <ul className="space-y-3">
@@ -82,20 +87,20 @@ const Languages = () => {
               >
                 {lang.primary && (
                   <span className="absolute -top-3 right-6 px-3 py-1 rounded-full bg-accent text-accent-foreground text-xs font-bold">
-                    Primary
+                    {t("lang.primary")}
                   </span>
                 )}
                 
                 <div className="flex items-center gap-4 mb-3">
                   <span className="text-3xl">{lang.flag}</span>
                   <div>
-                    <h3 className="text-xl font-bold text-white">{lang.name}</h3>
+                    <h3 className="text-xl font-bold text-white">{t(lang.nameKey)}</h3>
                     <p className="text-sm text-white/80">{lang.englishName}</p>
                   </div>
                 </div>
                 
-                <p className={`text-white/90 ${lang.englishName === 'Gujarati' ? 'font-gujarati' : lang.englishName === 'Hindi' ? 'font-hindi' : ''}`}>
-                  "{lang.sample}"
+                <p className={`text-white/90 ${lang.fontClass}`}>
+                  "{t(lang.sampleKey)}"
                 </p>
               </div>
             ))}
