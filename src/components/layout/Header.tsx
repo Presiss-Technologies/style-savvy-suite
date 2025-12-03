@@ -1,18 +1,21 @@
 import { useApp } from '@/contexts/AppContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Wifi, WifiOff, Scissors, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-
-const navItems = [
-  { to: '/', label: 'Dashboard' },
-  { to: '/customers', label: 'Customers' },
-  { to: '/orders', label: 'Orders' },
-];
+import LanguageSelector from '@/components/landing/LanguageSelector';
 
 export const Header = () => {
   const { state } = useApp();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { to: '/dashboard', label: t('nav.dashboard') },
+    { to: '/customers', label: t('nav.customers') },
+    { to: '/orders', label: t('nav.orders') },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
@@ -52,7 +55,7 @@ export const Header = () => {
             </SheetContent>
           </Sheet>
 
-          <NavLink to="/" className="flex items-center gap-2">
+          <NavLink to="/dashboard" className="flex items-center gap-2">
             <div className="rounded-lg gradient-gold p-2 shadow-glow">
               <Scissors className="h-5 w-5 text-primary-foreground" />
             </div>
@@ -80,6 +83,7 @@ export const Header = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <LanguageSelector />
           <div
             className={cn(
               'flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all',
@@ -91,12 +95,12 @@ export const Header = () => {
             {state.isOnline ? (
               <>
                 <Wifi className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Online</span>
+                <span className="hidden sm:inline">{t('nav.online')}</span>
               </>
             ) : (
               <>
                 <WifiOff className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Offline</span>
+                <span className="hidden sm:inline">{t('nav.offline')}</span>
               </>
             )}
           </div>

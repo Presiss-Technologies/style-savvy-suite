@@ -1,4 +1,5 @@
 import { useApp } from '@/contexts/AppContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Layout } from '@/components/layout/Layout';
 import { CustomerSearch } from '@/components/customers/CustomerSearch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +11,7 @@ import { Users, Ruler, ShoppingBag, TrendingUp, Plus, Clock, CheckCircle, AlertC
 
 const Index = () => {
   const { state, getCustomer } = useApp();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const stats = {
@@ -36,13 +38,13 @@ const Index = () => {
         {/* Hero Search Section */}
         <section className="text-center py-8">
           <h1 className="text-3xl sm:text-4xl font-display font-bold mb-2">
-            Welcome to <span className="text-gradient">TailorPro</span>
+            {t('dashboard.welcome')} <span className="text-gradient">TailorPro</span>
           </h1>
           <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-            Streamline your tailoring business with instant customer lookup, measurements, and order management.
+            {t('dashboard.subtitle')}
           </p>
           <div className="max-w-xl mx-auto">
-            <CustomerSearch placeholder="Quick search: Enter mobile number or customer name..." />
+            <CustomerSearch placeholder={t('dashboard.searchPlaceholder')} />
           </div>
         </section>
 
@@ -52,7 +54,7 @@ const Index = () => {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Customers</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.customers')}</p>
                   <p className="text-2xl font-bold">{stats.totalCustomers}</p>
                 </div>
                 <div className="p-3 rounded-xl bg-primary/10">
@@ -66,7 +68,7 @@ const Index = () => {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Measurements</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.measurements')}</p>
                   <p className="text-2xl font-bold">{stats.totalMeasurements}</p>
                 </div>
                 <div className="p-3 rounded-xl bg-info/10">
@@ -80,7 +82,7 @@ const Index = () => {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Orders</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.orders')}</p>
                   <p className="text-2xl font-bold">{stats.totalOrders}</p>
                 </div>
                 <div className="p-3 rounded-xl bg-success/10">
@@ -94,7 +96,7 @@ const Index = () => {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Revenue</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.revenue')}</p>
                   <p className="text-2xl font-bold">₹{stats.revenue.toLocaleString()}</p>
                 </div>
                 <div className="p-3 rounded-xl bg-warning/10">
@@ -114,7 +116,7 @@ const Index = () => {
             onClick={() => navigate('/customers/new')}
           >
             <Plus className="h-5 w-5" />
-            New Customer
+            {t('dashboard.newCustomer')}
           </Button>
           <Button
             variant="outline"
@@ -123,7 +125,7 @@ const Index = () => {
             onClick={() => navigate('/customers')}
           >
             <Users className="h-5 w-5" />
-            All Customers
+            {t('dashboard.allCustomers')}
           </Button>
           <Button
             variant="outline"
@@ -132,7 +134,7 @@ const Index = () => {
             onClick={() => navigate('/orders')}
           >
             <ShoppingBag className="h-5 w-5" />
-            All Orders
+            {t('dashboard.allOrders')}
           </Button>
         </section>
 
@@ -144,7 +146,7 @@ const Index = () => {
             </div>
             <div>
               <p className="text-2xl font-bold">{stats.pendingOrders}</p>
-              <p className="text-sm text-muted-foreground">Pending Orders</p>
+              <p className="text-sm text-muted-foreground">{t('dashboard.pendingOrders')}</p>
             </div>
           </Card>
           <Card className="flex items-center gap-4 p-5">
@@ -153,7 +155,7 @@ const Index = () => {
             </div>
             <div>
               <p className="text-2xl font-bold">{stats.readyOrders}</p>
-              <p className="text-sm text-muted-foreground">Ready for Pickup</p>
+              <p className="text-sm text-muted-foreground">{t('dashboard.readyForPickup')}</p>
             </div>
           </Card>
           <Card className="flex items-center gap-4 p-5">
@@ -164,7 +166,7 @@ const Index = () => {
               <p className="text-2xl font-bold">
                 ₹{state.orders.reduce((sum, o) => sum + (o.totalAmount - o.paidAmount), 0).toLocaleString()}
               </p>
-              <p className="text-sm text-muted-foreground">Outstanding Balance</p>
+              <p className="text-sm text-muted-foreground">{t('dashboard.outstandingBalance')}</p>
             </div>
           </Card>
         </section>
@@ -177,7 +179,7 @@ const Index = () => {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Clock className="h-5 w-5 text-warning" />
-                  Upcoming Deliveries
+                  {t('dashboard.upcomingDeliveries')}
                 </CardTitle>
                 <Badge variant="warning">{pendingOrders.length}</Badge>
               </div>
@@ -196,7 +198,7 @@ const Index = () => {
                 </div>
               ) : (
                 <p className="text-center text-muted-foreground py-8">
-                  No pending orders
+                  {t('dashboard.noPendingOrders')}
                 </p>
               )}
             </CardContent>
@@ -208,10 +210,10 @@ const Index = () => {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <ShoppingBag className="h-5 w-5 text-primary" />
-                  Recent Orders
+                  {t('dashboard.recentOrders')}
                 </CardTitle>
                 <Button variant="ghost" size="sm" onClick={() => navigate('/orders')}>
-                  View All
+                  {t('dashboard.viewAll')}
                 </Button>
               </div>
             </CardHeader>
@@ -229,7 +231,7 @@ const Index = () => {
                 </div>
               ) : (
                 <p className="text-center text-muted-foreground py-8">
-                  No orders yet. Create your first order!
+                  {t('dashboard.noOrders')}
                 </p>
               )}
             </CardContent>

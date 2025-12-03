@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
-import { CustomerSearch } from '@/components/customers/CustomerSearch';
 import { useApp } from '@/contexts/AppContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Plus, User, Phone, Tag, Search, SortAsc, SortDesc } from 'lucide-react';
-import { Customer } from '@/types';
+import { Plus, User, Phone, Search, SortAsc, SortDesc } from 'lucide-react';
 
 type SortField = 'name' | 'createdAt';
 type SortOrder = 'asc' | 'desc';
@@ -16,6 +15,7 @@ type SortOrder = 'asc' | 'desc';
 const Customers = () => {
   const navigate = useNavigate();
   const { state } = useApp();
+  const { t } = useLanguage();
   const [filter, setFilter] = useState('');
   const [sortField, setSortField] = useState<SortField>('createdAt');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
@@ -57,14 +57,14 @@ const Customers = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold">Customers</h1>
+            <h1 className="text-2xl sm:text-3xl font-display font-bold">{t('customers.title')}</h1>
             <p className="text-muted-foreground">
-              {state.customers.length} total customers
+              {state.customers.length} {t('customers.totalCustomers')}
             </p>
           </div>
           <Button variant="gold" onClick={() => navigate('/customers/new')} className="gap-2">
             <Plus className="h-4 w-4" />
-            Add Customer
+            {t('customers.addCustomer')}
           </Button>
         </div>
 
@@ -75,7 +75,7 @@ const Customers = () => {
             <Input
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              placeholder="Filter by name, mobile, or tag..."
+              placeholder={t('customers.filterPlaceholder')}
               className="pl-10"
             />
           </div>
@@ -86,7 +86,7 @@ const Customers = () => {
               onClick={() => toggleSort('name')}
               className="gap-1.5"
             >
-              Name
+              {t('customers.name')}
               {sortField === 'name' && (sortOrder === 'asc' ? <SortAsc className="h-3 w-3" /> : <SortDesc className="h-3 w-3" />)}
             </Button>
             <Button
@@ -95,7 +95,7 @@ const Customers = () => {
               onClick={() => toggleSort('createdAt')}
               className="gap-1.5"
             >
-              Date
+              {t('customers.date')}
               {sortField === 'createdAt' && (sortOrder === 'asc' ? <SortAsc className="h-3 w-3" /> : <SortDesc className="h-3 w-3" />)}
             </Button>
           </div>
@@ -139,14 +139,14 @@ const Customers = () => {
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <User className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="font-display text-xl font-semibold mb-2">No Customers Found</h3>
+              <h3 className="font-display text-xl font-semibold mb-2">{t('customers.noCustomersFound')}</h3>
               <p className="text-muted-foreground mb-6">
-                {filter ? 'Try adjusting your search criteria' : 'Start by adding your first customer'}
+                {filter ? t('customers.adjustSearch') : t('customers.addFirst')}
               </p>
               {!filter && (
                 <Button variant="gold" onClick={() => navigate('/customers/new')} className="gap-2">
                   <Plus className="h-4 w-4" />
-                  Add Customer
+                  {t('customers.addCustomer')}
                 </Button>
               )}
             </div>
