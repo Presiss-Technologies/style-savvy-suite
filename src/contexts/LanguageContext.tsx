@@ -422,6 +422,13 @@ export const translations = {
     "footer.terms": "Terms of Service",
     "footer.rights": "© 2024 StyleSavvy. All rights reserved.",
     "footer.madeWith": "Made with ❤️ for Surat's Tailoring Community",
+    
+    // Testimonials
+    "testimonialsTitle": "What Our Tailors Say",
+    "testimonialsSubtitle": "Hear from tailors who transformed their business with StyleSavvy",
+    "testimonial1Text": "StyleSavvy has completely changed how I manage my shop. Finding customer measurements used to take 10 minutes, now it's instant. My customers are happier too!",
+    "testimonial2Text": "The WhatsApp billing feature alone saves me 2 hours daily. No more phone calls asking about bills. I just send it instantly after the order.",
+    "testimonial3Text": "I was worried about using software, but the Gujarati interface made it so easy. Even my father who runs the shop can use it without any help.",
   },
   gu: {
     // Navbar
@@ -834,6 +841,13 @@ export const translations = {
     "footer.terms": "સેવાની શરતો",
     "footer.rights": "© ૨૦૨૪ StyleSavvy. બધા અધિકારો સુરક્ષિત.",
     "footer.madeWith": "સુરતના ટેલરિંગ સમુદાય માટે ❤️ થી બનાવેલ",
+    
+    // Testimonials
+    "testimonialsTitle": "અમારા દરજીઓ શું કહે છે",
+    "testimonialsSubtitle": "StyleSavvy સાથે તેમના બિઝનેસમાં પરિવર્તન લાવનારા દરજીઓની વાતો સાંભળો",
+    "testimonial1Text": "StyleSavvy એ મારી દુકાનનું સંચાલન સંપૂર્ણપણે બદલી નાખ્યું. ગ્રાહકના માપ શોધવામાં ૧૦ મિનિટ લાગતી હતી, હવે તરત મળે છે. મારા ગ્રાહકો પણ વધુ ખુશ છે!",
+    "testimonial2Text": "WhatsApp બિલિંગ ફીચર એકલું જ મને રોજ ૨ કલાક બચાવે છે. બિલ વિશે હવે કોઈ ફોન નથી આવતા. હું ઓર્ડર પછી તરત મોકલી દઉં છું.",
+    "testimonial3Text": "મને સોફ્ટવેર વાપરવાની ચિંતા હતી, પણ ગુજરાતી ઇન્ટરફેસથી ખૂબ સરળ બન્યું. મારા પિતાજી જે દુકાન ચલાવે છે તેઓ પણ કોઈ મદદ વગર વાપરી શકે છે.",
   },
   hi: {
     // Navbar
@@ -1246,6 +1260,13 @@ export const translations = {
     "footer.terms": "सेवा की शर्तें",
     "footer.rights": "© 2024 StyleSavvy. सर्वाधिकार सुरक्षित।",
     "footer.madeWith": "सूरत की टेलरिंग समुदाय के लिए ❤️ से बनाया गया",
+    
+    // Testimonials
+    "testimonialsTitle": "हमारे दर्जी क्या कहते हैं",
+    "testimonialsSubtitle": "StyleSavvy के साथ अपने बिज़नेस को बदलने वाले दर्जियों की बातें सुनें",
+    "testimonial1Text": "StyleSavvy ने मेरी दुकान का प्रबंधन पूरी तरह से बदल दिया। ग्राहक की नाप ढूंढने में 10 मिनट लगते थे, अब तुरंत मिल जाती है। मेरे ग्राहक भी खुश हैं!",
+    "testimonial2Text": "WhatsApp बिलिंग फीचर अकेले ही मुझे रोज 2 घंटे बचाता है। अब बिल के बारे में कोई फोन नहीं आते। मैं ऑर्डर के बाद तुरंत भेज देता हूं।",
+    "testimonial3Text": "मुझे सॉफ्टवेयर इस्तेमाल करने की चिंता थी, लेकिन गुजराती इंटरफेस से बहुत आसान हो गया। मेरे पिताजी जो दुकान चलाते हैं वो भी बिना किसी मदद के इस्तेमाल कर सकते हैं।",
   },
 };
 
