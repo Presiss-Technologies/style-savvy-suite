@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useApp } from '@/contexts/AppContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Order, OrderItem, UrgencyLevel } from '@/types';
 import { generateOrderNumber } from '@/lib/storage';
 import { toast } from 'sonner';
@@ -42,6 +43,7 @@ const defaultDeliveryDays = {
 
 export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProps) => {
   const { dispatch, getCustomerMeasurements } = useApp();
+  const { t } = useLanguage();
   const measurements = getCustomerMeasurements(customerId);
 
   const [items, setItems] = useState<OrderItem[]>(
@@ -98,7 +100,7 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
 
   const handleSubmit = () => {
     if (items.length === 0) {
-      toast.error('Please add at least one item');
+      toast.error(t('orderForm.itemError'));
       return;
     }
 
@@ -123,10 +125,10 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
 
     if (order) {
       dispatch({ type: 'UPDATE_ORDER', payload: savedOrder });
-      toast.success('Order updated successfully');
+      toast.success(t('orderForm.updatedSuccess'));
     } else {
       dispatch({ type: 'ADD_ORDER', payload: savedOrder });
-      toast.success(`Order #${savedOrder.orderNumber} created`);
+      toast.success(t('orderForm.createdSuccess').replace('{number}', savedOrder.orderNumber));
     }
 
     onSave?.();
@@ -137,24 +139,24 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <ShoppingBag className="h-5 w-5 text-primary" />
-          {order ? 'Edit Order' : 'New Order'}
+          {order ? t('orderForm.editOrder') : t('orderForm.newOrder')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Items */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label className="text-base font-medium">Order Items</Label>
+            <Label className="text-base font-medium">{t('orderForm.orderItems')}</Label>
             <Button variant="outline" size="sm" onClick={addItem} className="gap-1.5">
               <Plus className="h-4 w-4" />
-              Add Item
+              {t('orderForm.addItem')}
             </Button>
           </div>
 
           {items.map((item, index) => (
             <div key={item.id} className="flex gap-3 items-end p-4 bg-secondary/30 rounded-lg">
               <div className="flex-1 space-y-2">
-                <Label className="text-xs">Garment Type</Label>
+                <Label className="text-xs">{t('orderForm.garmentType')}</Label>
                 <Select
                   value={item.garmentType}
                   onValueChange={(value) => updateItem(item.id, { garmentType: value as OrderItem['garmentType'] })}
@@ -163,17 +165,17 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="shirt">Shirt</SelectItem>
-                    <SelectItem value="pant">Pant</SelectItem>
-                    <SelectItem value="kurta">Kurta</SelectItem>
-                    <SelectItem value="koti">Koti</SelectItem>
-                    <SelectItem value="waistcoat">Waistcoat</SelectItem>
+                    <SelectItem value="shirt">{t('orderForm.shirt')}</SelectItem>
+                    <SelectItem value="pant">{t('orderForm.pant')}</SelectItem>
+                    <SelectItem value="kurta">{t('orderForm.kurta')}</SelectItem>
+                    <SelectItem value="koti">{t('orderForm.koti')}</SelectItem>
+                    <SelectItem value="waistcoat">{t('orderForm.waistcoat')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="w-20 space-y-2">
-                <Label className="text-xs">Qty</Label>
+                <Label className="text-xs">{t('orderForm.qty')}</Label>
                 <Input
                   type="number"
                   min="1"
@@ -183,7 +185,7 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
               </div>
 
               <div className="w-28 space-y-2">
-                <Label className="text-xs">Price (₹)</Label>
+                <Label className="text-xs">{t('orderForm.price')} (₹)</Label>
                 <Input
                   type="number"
                   min="0"
@@ -209,21 +211,21 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
         {/* Urgency & Delivery */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label>Urgency Level</Label>
+            <Label>{t('orderForm.urgencyLevel')}</Label>
             <Select value={urgency} onValueChange={(v) => handleUrgencyChange(v as UrgencyLevel)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="normal">Normal (7 days)</SelectItem>
-                <SelectItem value="urgent">Urgent (3 days) +25%</SelectItem>
-                <SelectItem value="express">Express (1 day) +50%</SelectItem>
+                <SelectItem value="normal">{t('orderForm.normal7days')}</SelectItem>
+                <SelectItem value="urgent">{t('orderForm.urgent3days')}</SelectItem>
+                <SelectItem value="express">{t('orderForm.express1day')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label>Delivery Date</Label>
+            <Label>{t('orderForm.deliveryDate')}</Label>
             <div className="relative">
               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -239,14 +241,14 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
         {/* Payment */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label>Total Amount</Label>
+            <Label>{t('orderForm.totalAmount')}</Label>
             <div className="h-10 px-3 flex items-center bg-primary/10 rounded-lg font-semibold text-lg">
               ₹{totalAmount.toLocaleString()}
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Advance Payment (₹)</Label>
+            <Label>{t('orderForm.advancePayment')} (₹)</Label>
             <Input
               type="number"
               min="0"
@@ -258,11 +260,11 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
         </div>
 
         <div className="space-y-2">
-          <Label>Order Notes</Label>
+          <Label>{t('orderForm.orderNotes')}</Label>
           <Textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Any special instructions for this order..."
+            placeholder={t('orderForm.notesPlaceholder')}
             rows={3}
           />
         </div>
@@ -270,12 +272,12 @@ export const OrderForm = ({ customerId, order, onSave, onCancel }: OrderFormProp
         <div className="flex justify-end gap-3">
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
+              {t('orderForm.cancel')}
             </Button>
           )}
           <Button onClick={handleSubmit} variant="gold" className="gap-2">
             <Save className="h-4 w-4" />
-            {order ? 'Update Order' : 'Create Order'}
+            {order ? t('orderForm.updateOrder') : t('orderForm.createOrder')}
           </Button>
         </div>
       </CardContent>

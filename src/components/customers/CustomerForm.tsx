@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useApp } from '@/contexts/AppContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Customer, CustomerTag } from '@/types';
 import { toast } from 'sonner';
 import { ArrowLeft, Save, UserPlus, AlertCircle } from 'lucide-react';
@@ -21,6 +22,7 @@ export const CustomerForm = ({ customer, onSave }: CustomerFormProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state: appState, dispatch, searchCustomers } = useApp();
+  const { t } = useLanguage();
   
   const initialMobile = location.state?.mobile || '';
   
@@ -51,17 +53,17 @@ export const CustomerForm = ({ customer, onSave }: CustomerFormProps) => {
     e.preventDefault();
 
     if (!formData.name.trim()) {
-      toast.error('Please enter customer name');
+      toast.error(t('customerForm.nameError'));
       return;
     }
 
     if (!formData.mobile.trim() || formData.mobile.length < 10) {
-      toast.error('Please enter a valid mobile number');
+      toast.error(t('customerForm.mobileError'));
       return;
     }
 
     if (duplicateWarning) {
-      toast.error('A customer with this mobile number already exists');
+      toast.error(t('customerForm.duplicateError'));
       return;
     }
 
@@ -80,10 +82,10 @@ export const CustomerForm = ({ customer, onSave }: CustomerFormProps) => {
 
     if (customer) {
       dispatch({ type: 'UPDATE_CUSTOMER', payload: savedCustomer });
-      toast.success('Customer updated successfully');
+      toast.success(t('customerForm.updatedSuccess'));
     } else {
       dispatch({ type: 'ADD_CUSTOMER', payload: savedCustomer });
-      toast.success('Customer added successfully');
+      toast.success(t('customerForm.addedSuccess'));
     }
 
     if (onSave) {
@@ -101,44 +103,44 @@ export const CustomerForm = ({ customer, onSave }: CustomerFormProps) => {
         className="mb-4 gap-2"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back
+        {t('customerForm.back')}
       </Button>
 
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-primary" />
-            {customer ? 'Edit Customer' : 'New Customer'}
+            {customer ? t('customerForm.editCustomer') : t('customerForm.newCustomer')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="name">Name *</Label>
+                <Label htmlFor="name">{t('customerForm.nameRequired')}</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Enter customer name"
+                  placeholder={t('customerForm.enterName')}
                   className="h-11"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="mobile">Mobile Number *</Label>
+                <Label htmlFor="mobile">{t('customerForm.mobileRequired')}</Label>
                 <Input
                   id="mobile"
                   value={formData.mobile}
                   onChange={(e) => setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, '').slice(0, 10) })}
-                  placeholder="Enter 10-digit mobile"
+                  placeholder={t('customerForm.enterMobile')}
                   className="h-11"
                 />
                 {duplicateWarning && (
                   <div className="flex items-center gap-2 text-sm text-warning mt-1">
                     <AlertCircle className="h-4 w-4" />
                     <span>
-                      Customer "{duplicateWarning.name}" already exists with this number
+                      {t('customerForm.duplicateWarning').replace('{name}', duplicateWarning.name)}
                     </span>
                   </div>
                 )}
@@ -147,19 +149,19 @@ export const CustomerForm = ({ customer, onSave }: CustomerFormProps) => {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('customerForm.email')}</Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="Enter email address"
+                  placeholder={t('customerForm.enterEmail')}
                   className="h-11"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tag">Customer Type</Label>
+                <Label htmlFor="tag">{t('customerForm.customerType')}</Label>
                 <Select
                   value={formData.tag}
                   onValueChange={(value) => setFormData({ ...formData, tag: value as CustomerTag })}
@@ -168,43 +170,43 @@ export const CustomerForm = ({ customer, onSave }: CustomerFormProps) => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="VIP">VIP</SelectItem>
-                    <SelectItem value="Regular">Regular</SelectItem>
-                    <SelectItem value="Walk-in">Walk-in</SelectItem>
+                    <SelectItem value="VIP">{t('customerForm.vip')}</SelectItem>
+                    <SelectItem value="Regular">{t('customerForm.regular')}</SelectItem>
+                    <SelectItem value="Walk-in">{t('customerForm.walkin')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="address">{t('customerForm.address')}</Label>
               <Textarea
                 id="address"
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                placeholder="Enter full address"
+                placeholder={t('customerForm.enterAddress')}
                 rows={2}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
+              <Label htmlFor="notes">{t('customerForm.notes')}</Label>
               <Textarea
                 id="notes"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Any special instructions or preferences"
+                placeholder={t('customerForm.enterNotes')}
                 rows={3}
               />
             </div>
 
             <div className="flex justify-end gap-3">
               <Button type="button" variant="outline" onClick={() => navigate(-1)}>
-                Cancel
+                {t('customerForm.cancel')}
               </Button>
               <Button type="submit" variant="gold" className="gap-2">
                 <Save className="h-4 w-4" />
-                {customer ? 'Update Customer' : 'Save Customer'}
+                {customer ? t('customerForm.update') : t('customerForm.save')}
               </Button>
             </div>
           </form>
