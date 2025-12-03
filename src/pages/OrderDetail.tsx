@@ -9,10 +9,11 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { OrderWorkflowStages } from '@/components/orders/OrderWorkflowStages';
 import { toast } from 'sonner';
 import { 
   ArrowLeft, User, Phone, Package, Calendar, IndianRupee, 
-  Edit, Printer, CheckCircle, Clock, Truck
+  Edit, Printer, CheckCircle, Clock, Truck, Scissors, MessageCircle, Check
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Order, OrderStatus, PaymentStatus } from '@/types';
@@ -40,10 +41,38 @@ const OrderDetail = () => {
 
   const statusConfig: Record<string, { label: string; variant: 'warning' | 'info' | 'success' | 'secondary' | 'destructive'; icon: typeof Clock }> = {
     pending: { label: t('orders.pending'), variant: 'warning', icon: Clock },
-    'in-progress': { label: t('orders.inProgress'), variant: 'info', icon: Package },
+    cutting: { label: t('orders.cutting'), variant: 'info', icon: Scissors },
+    stitching: { label: t('orders.stitching'), variant: 'info', icon: Package },
+    trial: { label: t('orders.trial'), variant: 'warning', icon: User },
     ready: { label: t('orders.ready'), variant: 'success', icon: CheckCircle },
     delivered: { label: t('orders.delivered'), variant: 'secondary', icon: Truck },
     cancelled: { label: t('orders.cancelled'), variant: 'destructive', icon: Clock },
+  };
+
+  const workflowStages: OrderStatus[] = ['pending', 'cutting', 'stitching', 'trial', 'ready', 'delivered'];
+  
+  const getStageIndex = (status: OrderStatus) => workflowStages.indexOf(status);
+  
+  const handleShareWhatsApp = () => {
+    if (!customer || !order) return;
+    
+    const itemsList = order.items.map(item => 
+      `• ${item.quantity}x ${garmentLabels[item.garmentType]} - ₹${(item.price * item.quantity).toLocaleString()}`
+    ).join('\n');
+    
+    const message = encodeURIComponent(
+      `*${t('orderDetail.order')} #${order.orderNumber}*\n\n` +
+      `${t('orderDetail.customerDetails')}: ${customer.name}\n` +
+      `${t('orderDetail.deliveryDate')}: ${format(new Date(order.deliveryDate), 'MMM d, yyyy')}\n\n` +
+      `*${t('orderDetail.orderItems')}:*\n${itemsList}\n\n` +
+      `*${t('orderDetail.total')}:* ₹${order.totalAmount.toLocaleString()}\n` +
+      `*${t('orders.paid')}:* ₹${order.paidAmount.toLocaleString()}\n` +
+      `*${t('orderDetail.balance')}:* ₹${balance.toLocaleString()}\n\n` +
+      `${t('orderDetail.status')}: ${statusConfig[order.status].label}`
+    );
+    
+    window.open(`https://wa.me/${customer.mobile}?text=${message}`, '_blank');
+    toast.success(t('orderDetail.whatsappOpened'));
   };
 
   if (!order || !customer) {
@@ -108,7 +137,7 @@ const OrderDetail = () => {
                   {t('orderDetail.createdOn')} {format(new Date(order.createdAt), 'MMMM d, yyyy')}
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <Button 
                   variant="outline" 
                   onClick={() => setIsEditing(!isEditing)}
@@ -116,6 +145,10 @@ const OrderDetail = () => {
                 >
                   <Edit className="h-4 w-4" />
                   {isEditing ? t('orderDetail.cancel') : t('orderDetail.edit')}
+                </Button>
+                <Button variant="outline" className="gap-2" onClick={handleShareWhatsApp}>
+                  <MessageCircle className="h-4 w-4" />
+                  {t('orderDetail.shareWhatsApp')}
                 </Button>
                 <Button variant="outline" className="gap-2">
                   <Printer className="h-4 w-4" />
@@ -211,6 +244,9 @@ const OrderDetail = () => {
                 <CardTitle className="text-lg">{t('orderDetail.orderStatus')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Workflow Stages */}
+                <OrderWorkflowStages currentStatus={order.status} />
+                
                 {isEditing ? (
                   <>
                     <div className="space-y-2">
@@ -221,7 +257,9 @@ const OrderDetail = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="pending">{t('orders.pending')}</SelectItem>
-                          <SelectItem value="in-progress">{t('orders.inProgress')}</SelectItem>
+                          <SelectItem value="cutting">{t('orders.cutting')}</SelectItem>
+                          <SelectItem value="stitching">{t('orders.stitching')}</SelectItem>
+                          <SelectItem value="trial">{t('orders.trial')}</SelectItem>
                           <SelectItem value="ready">{t('orders.ready')}</SelectItem>
                           <SelectItem value="delivered">{t('orders.delivered')}</SelectItem>
                           <SelectItem value="cancelled">{t('orders.cancelled')}</SelectItem>

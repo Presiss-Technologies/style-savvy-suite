@@ -1,7 +1,8 @@
 import { 
   Users, Ruler, ClipboardList, Receipt, 
   Smartphone, Wifi, WifiOff, Globe, 
-  MessageCircle, Bell, BarChart3, Wallet
+  MessageCircle, Bell, BarChart3, Wallet,
+  Scissors, Search, History
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -10,7 +11,7 @@ const Features = () => {
   
   const mainFeatures = [
     {
-      icon: Users,
+      icon: Search,
       titleKey: "features.customer",
       descKey: "features.customerDesc",
       color: "bg-blue-500/10 text-blue-600",
@@ -22,13 +23,13 @@ const Features = () => {
       color: "bg-amber-500/10 text-amber-600",
     },
     {
-      icon: ClipboardList,
+      icon: Scissors,
       titleKey: "features.orders",
       descKey: "features.ordersDesc",
       color: "bg-emerald-500/10 text-emerald-600",
     },
     {
-      icon: Receipt,
+      icon: MessageCircle,
       titleKey: "features.billing",
       descKey: "features.billingDesc",
       color: "bg-rose-500/10 text-rose-600",

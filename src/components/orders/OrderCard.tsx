@@ -20,7 +20,9 @@ export const OrderCard = ({ order, customer, onEdit, showCustomer = false }: Ord
   
   const statusConfig: Record<string, { label: string; variant: 'warning' | 'info' | 'success' | 'secondary' | 'destructive' }> = {
     pending: { label: t('orders.pending'), variant: 'warning' },
-    'in-progress': { label: t('orders.inProgress'), variant: 'info' },
+    cutting: { label: t('orders.cutting'), variant: 'info' },
+    stitching: { label: t('orders.stitching'), variant: 'info' },
+    trial: { label: t('orders.trial'), variant: 'warning' },
     ready: { label: t('orders.ready'), variant: 'success' },
     delivered: { label: t('orders.delivered'), variant: 'secondary' },
     cancelled: { label: t('orders.cancelled'), variant: 'destructive' },

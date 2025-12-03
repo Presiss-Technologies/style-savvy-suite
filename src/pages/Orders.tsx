@@ -38,7 +38,9 @@ const Orders = () => {
   const statusCounts = {
     all: state.orders.length,
     pending: state.orders.filter(o => o.status === 'pending').length,
-    'in-progress': state.orders.filter(o => o.status === 'in-progress').length,
+    cutting: state.orders.filter(o => o.status === 'cutting').length,
+    stitching: state.orders.filter(o => o.status === 'stitching').length,
+    trial: state.orders.filter(o => o.status === 'trial').length,
     ready: state.orders.filter(o => o.status === 'ready').length,
     delivered: state.orders.filter(o => o.status === 'delivered').length,
   };
@@ -47,7 +49,9 @@ const Orders = () => {
     switch (status) {
       case 'all': return t('orders.all');
       case 'pending': return t('orders.pending');
-      case 'in-progress': return t('orders.inProgress');
+      case 'cutting': return t('orders.cutting');
+      case 'stitching': return t('orders.stitching');
+      case 'trial': return t('orders.trial');
       case 'ready': return t('orders.ready');
       case 'delivered': return t('orders.delivered');
       default: return status;
@@ -69,7 +73,7 @@ const Orders = () => {
 
         {/* Status Filters */}
         <div className="flex flex-wrap gap-2">
-          {(['all', 'pending', 'in-progress', 'ready', 'delivered'] as const).map(status => (
+          {(['all', 'pending', 'cutting', 'stitching', 'trial', 'ready', 'delivered'] as const).map(status => (
             <Button
               key={status}
               variant={statusFilter === status ? 'default' : 'outline'}
